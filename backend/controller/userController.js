@@ -1,6 +1,8 @@
 const bcrypt = require("bcrypt");
 const User = require("../model/userModel");
 const jwt = require("jsonwebtoken");
+const Event = require("../model/eventSchema")
+
 
 
 const signup = async (req,res) => {
@@ -96,8 +98,71 @@ const getAllUsers = async (req,res) => {
         console.log(error)
     }
 }
+
+const invitation = async (req, res) => {
+    try {
+      const invitationGettingUserId = req.params.id;
+      const eventId = req.body.eventId;
+      const userId = JSON.stringify(res.locals.user._id);
+      // Find the user by ID
+
+
+      
+      const user = await User.findById(invitationGettingUserId);
+      
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+        }
+        
+        const existingInvitation = user.eventInvitations.find(invitation => invitation.eventId.toString() === eventId);
+        if (existingInvitation) {
+            return res.status(400).json({ message: "Invitation already exists for this user and event" });
+        }
+      // Create the invitation object
+      const invitationObject = {
+        eventId: eventId,
+        sender: res.locals.user._id, // Assuming you have user data in req.user after authentication
+        invitationText: 'Your invitation message here'
+      };
+  
+      // Push the invitation object to the user's eventInvitations array
+      user.eventInvitations.push(invitationObject);
+  
+      // Save the user with the updated eventInvitations array
+      await user.save();
+      console.log(user)
+      res.status(200).json({ message: 'Invitation sent successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+
+const getAllInvitations = async (req,res) => {
+    try {
+        const userIdWithQuotes = JSON.stringify(res.locals.user._id);
+        const userId = userIdWithQuotes.replace(/"/g, '');
+        console.log(userId);
+        const user = await User.findById(userId)
+        // Fetch all events based on event IDs
+        const eventIds = user?.eventInvitations?.map(invitation => invitation.eventId);
+        const events = await Event.find({ _id: { $in: eventIds } });
+        console.log("jjjj",events)
+        
+        if(!user){
+            res.status(400).json({message:"User not found"})
+        }
+        res.status(200).json({user,events})
+      
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({message:"Internal server error"})
+    }
+}
 module.exports = {
     signup,
     login,
-    getAllUsers
+    getAllUsers,
+    invitation,
+    getAllInvitations
 }

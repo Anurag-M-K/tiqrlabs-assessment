@@ -4,10 +4,13 @@ import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { setAllUsersDetails } from "../redux/features/allUsersSlice";
 import DataTable from "react-data-table-component";
-import { io } from "socket.io-client";
-import { setSocketdata } from "../redux/features/userSlice";
+import { useLocation } from "react-router-dom";
+
+
 
 function InvitingFriendsTable() {
+  const location = useLocation();
+  const eventId = location.pathname.split('/').pop();
   const { tokenData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [socket, setSocket] = useState(null);
@@ -22,13 +25,7 @@ function InvitingFriendsTable() {
     setRecords(allUsersDetails);
   }, [allUsersDetails]);
 
-  useEffect(() => {
-    setSocket(io("http://localhost:5000"));
-  }, []);
 
-  useEffect(() => {
-    socket?.emit("newUser", userDetails);
-  }, [socket, userDetails]);
 
   const getAllUsers = async () => {
     try {
@@ -79,30 +76,29 @@ function InvitingFriendsTable() {
     },
   };
 
-  const handleInviteClick = (user) => {
+  const handleInviteClick = async (user) => {
     try {
-      //   const socket = io ('http://localhost:5173'); // Replace with your Socket.IO server URL
-
-      socket.emit("send-invitation", {
-        sender: userDetails?.username, // You might need to adjust this based on your API's requirements
-        recievername: user.username,
-        invitation: "Invitation here",
-        // Add any other data you need to send as part of the invitation
-      });
+      const userToken = tokenData;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      };
+      const requestData = {
+        eventId: eventId    // The event ID you want to pass
+      };
+      
+      const apiUrl = `http://localhost:8080/api/invite/${user._id}`;
+      const response = await axios.post(apiUrl, requestData   , config);
 
       // Handle success
-      console.log("Invitation sent");
-      console.log(socket);
-      toast.success("Invitation sent successfully!");
-      console.log("socket ", socket);
-      dispatch(setSocketdata(socket));
+      toast.success('Invitation sent successfully!');
     } catch (error) {
-      // Handle error
-      console.error("Error sending invitation:", error);
-      toast.error("Error sending invitation");
+      console.log(error);
+      toast.error(error?.response?.data?.message);
     }
-  };
-
+  }
+  
   const handleFilter = (event) => {
     const searchString = event.target.value.toLowerCase();
     const newData = allUsersDetails.filter((row) => {

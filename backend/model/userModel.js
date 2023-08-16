@@ -18,10 +18,17 @@ const userSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Event'
     }],
-    recievedInvitations:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Invitation'
-    }],
+    eventInvitations: [{
+        eventId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Event'
+        },
+        sender: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'User'
+        },
+       
+      }]
 })
 
 const User = mongoose.model("User",userSchema);

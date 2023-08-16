@@ -6,6 +6,7 @@ import { userSlice } from "./features/userSlice";
 import { eventsSlice } from "./features/eventsSlice";
 import { allUsersSlice } from "./features/allUsersSlice";
 import { alertSlice } from "./features/alertSlice";
+import { invitationSlice } from "./features/invitationSlice";
 
 const persistConfig = {
     key:"root",
@@ -18,6 +19,7 @@ const reducer = combineReducers({
         events:eventsSlice.reducer,
         allUsers:allUsersSlice.reducer,
         alerts:alertSlice.reducer,
+        invitations:invitationSlice.reducer,
 })
 
 

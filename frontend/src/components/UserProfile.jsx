@@ -1,26 +1,39 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { Toaster, toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { io } from "socket.io-client";
+import { setInvitationData } from "../redux/features/invitationSlice";
 
 function UserProfile() {
   const { userDetails } = useSelector((state) => state.user);
-  const [invitation, setInvitation] = useState([]);
-  // const {socket} = useSelector(state=>state.user)
-  const [socket, setSocket] = useState(null);
-  const navigate = useNavigate();
-  useEffect(() => {
-    setSocket(io("http://localhost:5000"));
-  }, []);
-  console.log("from profile socket ", socket);
+  const { tokenData } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+const navigate = useNavigate()
 
-  useEffect(() => {
-    socket?.on("getInvitation", (data) => {
-      setInvitation((prev) => [...prev, data]);
-    });
-  }, [socket, userDetails]);
+  useEffect(()=> {
+    getInvitations()
+  },[])
 
-  console.log("invidtation ", invitation);
+  const getInvitations = async()=> {
+try {
+  const userToken = tokenData;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${userToken}`,
+    },
+  };
+  const apiUrl = 'http://localhost:8080/api/getallinvitations'
+
+  const response = await axios.get(apiUrl,config)
+  dispatch(setInvitationData(response?.data?.user?.eventInvitations))
+  console.log(response)
+} catch (error) {
+  toast.error("Something went wrong")
+  console.log(error)
+}
+  }
+  
 
   return (
     <div className="profile-page ">
@@ -121,6 +134,7 @@ function UserProfile() {
           </div>
         </div>
       </section>
+      <Toaster/>
     </div>
   );
 }

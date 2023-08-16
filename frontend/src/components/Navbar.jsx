@@ -20,7 +20,8 @@ const navLinks = [
 
 ];
 
-function Navbar() {
+function Navbar({socket}) {
+  console.log("socket ",socket)
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen , setModalOpen] = useState(false)
   const [open, setOpen] = useState(false);
@@ -129,8 +130,18 @@ function Navbar() {
             ))}
             {userDetails ? (
               <>
-                <h2>{userDetails?.username}</h2>
-                <button>Logout</button>
+                <h2
+                      onClick={() => setIsOpen((prev) => !prev)}
+                      className="text-white cursor-pointer ml-3 md:ml-0 font-medium"
+                    >
+                      {userDetails?.username}
+                    </h2>
+                <h3
+                      className="rounded text-white p-1 px-2 hover:scale-95 transition duration-300"
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </h3>
               </>
             ) : (
               ""
