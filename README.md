@@ -1,14 +1,14 @@
 # event-management
 A simple React application for event and user management.
 
-##Link
+## Link
 the event management system is deployed at https://event-management-tiqrlabs-react.netlify.app
 
-#Installation
+## Installation
 1. clone the repository : https://github.com/Anurag-M-K/tiqrlabs-assessment.git
 2. install dependencies in both frontend and backend folders
 3.start the server : `npm start`
 4. Start the frontend: `npm run dev`
 
-##ENV
+## ENV
 Frontend env - VITE_APP_BACKEND_URL = "http://localhost:8080/api";
