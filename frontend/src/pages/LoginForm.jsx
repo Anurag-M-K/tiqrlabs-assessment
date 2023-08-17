@@ -21,7 +21,6 @@ function LoginForm() {
         email,
         password,
       });
-      console.log("response ",response?.data)
       dispatch(setUserDetails(response?.data?.user))
       dispatch(setToken(response?.data?.token))
       

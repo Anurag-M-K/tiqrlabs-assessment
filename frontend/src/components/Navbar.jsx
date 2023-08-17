@@ -85,10 +85,13 @@ function Navbar({socket}) {
             <div className="">
             </div>
                     {" "}
-                    <CgProfile color="white" size={20} />
+                    <div className="mb-2">
+                      
+                      <CgProfile color="white" size={20} />
+                      </div>
                     <h2
                       onClick={() => setIsOpen((prev) => !prev)}
-                      className="text-white cursor-pointer font-medium"
+                      className="text-white mb-2 cursor-pointer font-medium"
                     >
                       {userDetails?.username}
                     </h2>
