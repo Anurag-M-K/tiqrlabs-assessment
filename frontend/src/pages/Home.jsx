@@ -9,8 +9,6 @@ function Home() {
     <>
 <Navbar />
 <HomeContent/>
-  
-
 <EventsLists/>
 <Footer/>
     </>

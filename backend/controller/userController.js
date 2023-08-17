@@ -114,7 +114,7 @@ const invitation = async (req, res) => {
           return res.status(404).json({ message: 'User not found' });
         }
         
-        const existingInvitation = user.eventInvitations.find(invitation => invitation.eventId.toString() === eventId);
+        const existingInvitation = user.eventInvitations.find(invitation => invitation?.eventId?.toString() === eventId);
         if (existingInvitation) {
             return res.status(400).json({ message: "Invitation already exists for this user and event" });
         }
@@ -130,7 +130,6 @@ const invitation = async (req, res) => {
   
       // Save the user with the updated eventInvitations array
       await user.save();
-      console.log(user)
       res.status(200).json({ message: 'Invitation sent successfully' });
     } catch (error) {
       console.error(error);
@@ -142,12 +141,10 @@ const getAllInvitations = async (req,res) => {
     try {
         const userIdWithQuotes = JSON.stringify(res.locals.user._id);
         const userId = userIdWithQuotes.replace(/"/g, '');
-        console.log(userId);
         const user = await User.findById(userId)
         // Fetch all events based on event IDs
         const eventIds = user?.eventInvitations?.map(invitation => invitation.eventId);
         const events = await Event.find({ _id: { $in: eventIds } });
-        console.log("jjjj",events)
         
         if(!user){
             res.status(400).json({message:"User not found"})
@@ -159,10 +156,68 @@ const getAllInvitations = async (req,res) => {
         res.status(500).json({message:"Internal server error"})
     }
 }
+
+const rejectInvitation = async (req,res) => {
+    try {
+        const userIdWithQuotes = JSON.stringify(res.locals.user._id);
+        const userId = userIdWithQuotes.replace(/"/g, '');
+      const  invitationId = req.params.id;
+        // Update the user document to remove the invitation
+    const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $pull: { eventInvitations: { eventId: invitationId } } },
+        { new: true } // Return the updated user document
+      );
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.status(200).json({ message: "Invitation rejected successfully" });
+  
+    } catch (error) {
+        res.status(500).json({message:"Internal server error"})
+    }
+};
+const acceptedInvitation = async (req, res) => {
+    try {
+        const userIdWithQuotes = JSON.stringify(res.locals.user._id);
+        const userId = userIdWithQuotes.replace(/"/g, '');
+        const acceptedInvitationId = req.params.id;
+        const updateUser = await User.findById(userId);
+
+        if (!updateUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        const eventToAccept = updateUser.eventInvitations.filter(event => event.eventId.toString() ===  acceptedInvitationId
+        );
+        if (!eventToAccept) {
+            return res.status(404).json({ message: "Invitation not found" });
+        }
+
+        eventToAccept.status = true;
+
+        await updateUser.save();
+
+        eventToAccept[0].status = true;
+
+        await updateUser.save();
+
+
+        res.status(200).json({ message: "Invitation accepted", updateUser });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
+
 module.exports = {
     signup,
     login,
     getAllUsers,
     invitation,
-    getAllInvitations
+    getAllInvitations,
+    rejectInvitation,
+    acceptedInvitation
 }

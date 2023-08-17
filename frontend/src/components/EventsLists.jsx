@@ -11,7 +11,7 @@ function EventsLists() {
     const dispatch = useDispatch();
     const { eventsDetails} = useSelector(state=> state.events);
     const navigate = useNavigate()
-console.log("evendt ",eventsDetails)
+console.log("tokenData ",tokenData)
 
 useEffect(()=>{
     getAllEvents()
@@ -24,7 +24,7 @@ useEffect(()=>{
 
       const getAllEvents = async () => {
         try {
-            const userToken =token;
+            const userToken =tokenData;
             const apiUrl = `http://localhost:8080/api/event/getallevents`;
             const config = {
                 headers: {
