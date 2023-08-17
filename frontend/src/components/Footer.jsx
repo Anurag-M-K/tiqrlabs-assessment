@@ -4,7 +4,7 @@ import { AiOutlineLinkedin } from 'react-icons/ai'
 import { FiTwitter } from 'react-icons/fi'
 function Footer() {
   return (
-    <div class="grid grid-cols-1 h-36  bg-gray-800 text-white">
+    <div class="grid grid-cols-1 h-36  mt-32  bg-gray-800 text-white">
 
   <div class="flex flex-col justify-center  items-center">
     <h3 class="text-2xl mt-5">tiqrlabs</h3>

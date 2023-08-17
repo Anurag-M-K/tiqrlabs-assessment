@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { useDispatch, useSelector } from 'react-redux';
 import { setAllUsersDetails } from '../redux/features/allUsersSlice';
@@ -9,10 +9,10 @@ function UsersTable() {
   const { tokenData } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const { allUsersDetails } = useSelector(state=> state.allUsers);
+  const [records, setRecords] = useState(allUsersDetails);
 
-console.log("allusers ",allUsersDetails)
+
 useEffect(()=>{
-  console.log("in useffect")
   getAllUsers() 
 },[])
 
@@ -24,9 +24,8 @@ useEffect(()=>{
               Authorization: `Bearer ${userToken}`,
             },
           };
-          const apiUrl = `http://localhost:8080/api/allusers`;
+          const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/allusers`;
           const response = await axios.get(apiUrl,config)
-          console.log(response)
           dispatch(setAllUsersDetails(response?.data.users));
         } catch (error) {
             toast.error("Something went wrong")
@@ -45,6 +44,12 @@ useEffect(()=>{
         selector:(row)=> row?.email,
         
       }
+      ,
+      {
+        name:"Career",
+        selector:(row)=> row?.yourwork,
+        
+      }
     ];
     const customStyles = {
       headCells: {
@@ -54,9 +59,26 @@ useEffect(()=>{
         },
       },
     };
+
+    const handleFilter = (event) => {
+      const searchString = event.target.value.toLowerCase();
+      const newData = allUsersDetails.filter((row) => {
+        return row.yourwork.toLowerCase().includes(searchString);
+      });
+      setRecords(newData);
+    };
   return (
-    <div className='p-20 '>
-        <DataTable className='border' pagination  columns={columns} data={allUsersDetails} fixedHeader customStyles={customStyles} />
+    <div className='p-20 mb-20 '>
+      <h1 className='text-3xl font-medium text-center my-5'>USERS</h1>
+      <div className="text-end m-5">
+        <input
+        placeholder='Search by career'
+          className="border-2 border-black rounded"
+          onChange={handleFilter}
+          type="text"
+        />
+      </div>
+        <DataTable className='border' pagination  columns={columns} data={records} fixedHeader customStyles={customStyles} />
     </div>
   )
 }

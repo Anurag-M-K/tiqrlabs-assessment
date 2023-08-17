@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
-import { setSocketdata } from "../redux/features/userSlice";
 import { setInvitationData } from "../redux/features/invitationSlice";
 
 function Invitation() {
@@ -24,11 +23,10 @@ function Invitation() {
           Authorization: `Bearer ${userToken}`,
         },
       };
-      const apiUrl = "http://localhost:8080/api/getallinvitations";
+      const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/getallinvitations`;
 
       const response = await axios.get(apiUrl, config);
       dispatch(setInvitationData(response?.data?.events));
-      console.log(response);
     } catch (error) {
       toast.error("Something went wrong");
       console.log(error);
@@ -88,7 +86,7 @@ function Invitation() {
           Authorization: `Bearer ${userToken}`,
         },
       };
-      const apiUrl = `http://localhost:8080/api/rejectinvitation/${invitationId}`;
+      const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/rejectinvitation/${invitationId}`;
 
       const response = await axios.delete(apiUrl, config);
       const res = getInvitations();
@@ -108,11 +106,10 @@ function Invitation() {
           Authorization: `Bearer ${userToken}`,
         },
       };
-      const apiUrl = `http://localhost:8080/api/acceptedInvitation/${invitationId}`;
+      const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/acceptedInvitation/${invitationId}`;
 
       const response = await axios.put(apiUrl,null, config);
       toast.success(response.data.message)
-      console.log("respone ",response)
     } catch (error) {
       console.log(error)
       toast.error("Something went wrong")
@@ -120,8 +117,8 @@ function Invitation() {
   }
 
   return (
-    <div className="p-28 ">
-      <h1 className="text-center my-5 text-2xl font-medium">Invitations</h1>
+    <div className="p-28 my-1 ">
+      <h1 className="text-center my-5 text-2xl font-medium">INVITATIONS</h1>
       <DataTable
         className="border"
         pagination

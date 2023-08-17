@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
 import toast, { Toaster } from "react-hot-toast";
@@ -10,7 +10,7 @@ import { hideLoading, showLoading } from "../redux/features/alertSlice";
 import Spinner from "./Spinner";
 
 function EventAddForm({ modalOpen, setModalOpen }) {
-  const { loading } = useSelector((state) => state.alerts);
+  const [loading , setLoading ] =useState(false)
   const validate = Yup.object({
     title: Yup.string()
       .max(100, "Title must be 100 charecters or less")
@@ -45,6 +45,7 @@ function EventAddForm({ modalOpen, setModalOpen }) {
         ),
     }),
     onSubmit: async () => {
+      setLoading(true)
       const userToken = tokenData;
       const config = {
         headers: {
@@ -52,8 +53,8 @@ function EventAddForm({ modalOpen, setModalOpen }) {
         },
       };
 
-      const apiUrl = `http://localhost:8080/api/event/addevent`;
-      const apiUrl2 = `http://localhost:8080/api/event/getallevents`;
+      const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/event/addevent`;
+      const apiUrl2 = `${import.meta.env.VITE_BACKEND_URL}/event/getallevents`;
       const { image } = formik.values;
       const formData = new FormData();
       try {
@@ -64,11 +65,11 @@ function EventAddForm({ modalOpen, setModalOpen }) {
           formData
         );
         formik.values.img = res.data.url;
-        dispatch(showLoading(true));
+        
         const response = await axios.post(apiUrl, formik.values, config);
         const response2 = await axios.get(apiUrl2, config);
         dispatch(setEvents(response2?.data?.events));
-        dispatch(hideLoading(false));
+        setLoading(false)
         setModalOpen(false);
 
         toast.success("Event aded successfully");

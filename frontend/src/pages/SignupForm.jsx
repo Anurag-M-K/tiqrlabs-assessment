@@ -14,12 +14,13 @@ function SignupForm() {
     username:Yup.string().max(15, "username must be 15 charecters of less").required("Username is required"),
     email:Yup.string().email( "Email is invalid").required("Email is required"),
     password:Yup.string().min(6, "Password must be atleast 6 charecters").required("Password is required"),
+    yourwork:Yup.string().required("Your work is required")
   });
 
   const handleSubmit = async (values) => {
     try {
       setLoading(true)
-      const response = await axios.post('http://localhost:8080/api/signup', values); 
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/signup`, values); 
       setLoading(false)
 
       toast.success("Registered successfully")
@@ -48,7 +49,8 @@ function SignupForm() {
     initialValues={{
       username:"",
       email:"",
-      password:""
+      password:"",
+      yourwork:"",
     }}
     validationSchema={validate}
     onSubmit={handleSubmit}
@@ -85,6 +87,18 @@ function SignupForm() {
                   </div>
                   <div className="relative">
                   <TextField
+                       name="yourwork"
+                       type="yourwork"
+                    />
+                    <label
+                      for="yourwork"
+                      className="absolute left-0 -top-3.5 text-gray-600 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-440 peer-placeholder-shown:top-2 transition-all peer-focus:-top-3.5 peer-focus:text-gray-600 peer-focus:text-sm"
+                    >
+                    Your career
+                    </label>
+                  </div>  
+                  <div className="relative">
+                  <TextField
                        name="password"
                        type="password"
                     />
@@ -95,6 +109,7 @@ function SignupForm() {
                       Password
                     </label>
                   </div>
+                  
                   <div className="relative flex justify-between items-center">
                     <button type="submit" className="bg-blue-500 hover:bg-blue-600 hover:scale-95 duration-500 text-white rounded-md px-2 py-1">
                       {loading===true ? "Submiting..." : "Submit"}

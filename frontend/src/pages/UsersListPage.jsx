@@ -5,7 +5,7 @@ import Footer from '../components/Footer'
 
 function UsersListPage() {
   return (
-    <><Navbar /><UsersTable /> <Footer/></>
+    <div className='h-screen'><Navbar /><UsersTable /> <Footer/></div>
   )
 }
 

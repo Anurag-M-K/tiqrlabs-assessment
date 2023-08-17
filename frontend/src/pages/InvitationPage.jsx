@@ -5,11 +5,11 @@ import Footer from '../components/Footer'
 
 function InvitationPage() {
   return (
-    <>
+    <div className=''>
     <Navbar/>
-    <Invitation/>
+    <Invitation />
     <Footer/>
-    </>
+    </div>
   )
 }
 

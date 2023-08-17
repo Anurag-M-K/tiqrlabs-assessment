@@ -35,7 +35,7 @@ function InvitingFriendsTable() {
           Authorization: `Bearer ${userToken}`,
         },
       };
-      const apiUrl = `http://localhost:8080/api/allusers`;
+      const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/allusers`;
       const response = await axios.get(apiUrl, config);
       console.log(response);
       dispatch(setAllUsersDetails(response?.data.users));
@@ -54,6 +54,10 @@ function InvitingFriendsTable() {
     {
       name: "Email",
       selector: (row) => row?.email,
+    },
+    {
+      name: "Career",
+      selector: (row) => row?.yourwork,
     },
     {
       name: "Invite",
@@ -88,7 +92,7 @@ function InvitingFriendsTable() {
         eventId: eventId    // The event ID you want to pass
       };
       
-      const apiUrl = `http://localhost:8080/api/invite/${user._id}`;
+      const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/invite/${user._id}`;
       const response = await axios.post(apiUrl, requestData   , config);
 
       // Handle success
@@ -102,7 +106,7 @@ function InvitingFriendsTable() {
   const handleFilter = (event) => {
     const searchString = event.target.value.toLowerCase();
     const newData = allUsersDetails.filter((row) => {
-      return row.username.toLowerCase().includes(searchString);
+      return row.yourwork.toLowerCase().includes(searchString);
     });
     setRecords(newData);
   };
@@ -110,10 +114,11 @@ function InvitingFriendsTable() {
   return (
     <div className="p-28 ">
       <h1 className="text-center my-5 text-2xl font-medium">
-        Invite Your Friends here
+        INVITE FOR COLLABORATION
       </h1>
       <div className="text-end m-5">
         <input
+        placeholder="search by career"
           className="border-2 border-black rounded"
           onChange={handleFilter}
           type="text"

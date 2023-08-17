@@ -23,7 +23,7 @@ try {
       Authorization: `Bearer ${userToken}`,
     },
   };
-  const apiUrl = 'http://localhost:8080/api/getallinvitations'
+  const apiUrl = `${import.meta.env.VITE_BACKEND_URL}/getallinvitations`
 
   const response = await axios.get(apiUrl,config)
   dispatch(setInvitationData(response?.data?.user?.eventInvitations))

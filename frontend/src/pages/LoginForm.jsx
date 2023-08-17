@@ -17,7 +17,7 @@ function LoginForm() {
     e.preventDefault();
     try {
       setLoading(true)
-      const response = await axios.post("http://localhost:8080/api/login", {
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/login`, {
         email,
         password,
       });

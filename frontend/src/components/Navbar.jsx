@@ -43,7 +43,7 @@ function Navbar({socket}) {
         <div className="flex items-center justify-between h-16">
           <div onClick={() => setIsOpen(false)} className="flex items-center">
             <a className="text-white" href="/">
-              Navbar
+              TiqrLabs
             </a>
           </div>
           {/* ?navlinks */}
@@ -136,6 +136,14 @@ function Navbar({socket}) {
                     >
                       {userDetails?.username}
                     </h2>
+                    <button
+            className=" text-white ms-2 md:ms-0 cursor-pointer font-medium"
+            onClick={() => setModalOpen(true)} // Toggle modal open
+          >
+            Add Event
+          </button>
+          <h3 onClick={()=>navigate("/profile")} className="mborder-b md:bg-gray-600 text-white font-medium cursor-pointer hover:scale-95 transition duration-300  p-2">Profile</h3>
+                  <h3 onClick={()=>navigate("/hosted-events")} className="md:border-b md:bg-gray-600 text-white font-medium cursor-pointer hover:scale-95 transition duration-300 p-2">Hosted Events</h3>
                 <h3
                       className="rounded text-white p-1 px-2 hover:scale-95 transition duration-300"
                       onClick={handleLogout}
